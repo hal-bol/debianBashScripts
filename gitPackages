@@ -1,0 +1,5 @@
+#!/bin/bash
+allapps() {
+	sudo apt install kitty notepadqq lynis steam krita wine zsh firefox librewolf protonvpn xterm git curl wget -y
+	sudo apt update && sudo apt upgrade && sudo apt autoremove && sudo apt autoclean -y
+}
