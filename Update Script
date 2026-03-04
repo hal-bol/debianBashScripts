@@ -1,0 +1,41 @@
+#!/bin/bash
+echo -e "\n~ ~ ~ ~ ~ ~ ~ ~ <Starting Auto-Maintenance by Isaiah> ~ ~ ~ ~ ~ ~ ~ ~ ~"
+echo -e "\nOptions:\n
+   [1] ×¬ Force Execution Now. <Will automatically start in 15 secs>
+   [2] ×¬ Force Service Restart Only. <Restarts all critical services and may require reboot> 
+   [3] ×¬ Skip Auto-Maintenance Execution until next 24 hr cycle.
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
+packageUpdater(){
+    apt update -y && apt upgrade -y
+	apt clean
+	apt autoclean -y
+    apt autoremove -y
+}
+serviceRestarter(){
+    systemctl restart sshd
+    systemctl restart networking
+    systemctl restart chronyd
+}
+declare -i programForceEnd=0
+input=0
+read -t 5 input;
+while [ $programForceEnd -eq 0 ]; do
+case $input in 
+    1) 
+		input=5
+    	;;
+    2) 
+    	echo -e "\tRestarting services, may disrupt users."
+    	serviceRestarter
+		programForceEnd=1
+    	;;
+   	 3)
+   	 	programForceEnd=1
+   	 	;;
+   	 *) 
+    	packageUpdater
+    	serviceRestarter
+    	programForceEnd=1
+	    ;;
+	esac
+done
