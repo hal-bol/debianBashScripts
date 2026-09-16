@@ -1,0 +1,62 @@
+#!/bin/bash
+getUserInputFunc()
+	{
+		echo -e "\033[93m\e[4m\n---<USER INFO>---\n\e[24m"
+		UIDmin=$(grep "^UID_MIN" /etc/login.defs)5
+		echo -e "\033[36mSrc:/etc/login.defs\n   \033[36m->\033[39m Defined ID Range: \033[35m$UIDmin\033[39m | \033[35m$UIDmax\033[39m"
+			#Finds low and high UsrID, then print all UID's low += max, excludes root
+		echo -e "\n\033[36mSrc:/etc/passwd\n   \033[36m->\033[39m All non-root users, formated: 
+		 userName :x: UID# : [Alias] : /homeDir/ : shell\n\e[35m"
+		awk -F':' -v "min=${UIDmin#UID_MIN}" -v "max=${UIDmax##UID_MAX}" '{ if ( $3 >= min && $3 <= max ) print $0}' /etc/passwd #from dir /etc/login.defs
+		echo -e "\e[0m\033[36m\nDefault Permitted Groups:
+   ->\033[0m Format:
+ groupID : x : GID# : [Alias]	\033[35m\n"
+			getent group root
+			getent group sudo
+	}
+ getCurrentSecurityConfFunc()
+ 	{
+		loginLogging 
+	#********************CONTINUEHERE
+	}
+echo -e "\n\n\n\n\n\n\n\n\n\n ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- -------
+\e[1m\e[92m^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^\e[0m
+\033[33m 
+	   █████████             █████                                                          
+ 	 ███░░░░░███           ░░███                                                           
+	 ███     ░░░  █████ ████ ░███████   ██████  ████████                                    
+	░███         ░░███ ░███  ░███░░███ ███░░███░░███░░███                                   
+	░███          ░███ ░███  ░███ ░███░███████  ░███ ░░░                                    
+	░░███     ███ ░███ ░███  ░███ ░███░███░░░   ░███                                        
+	 ░░█████████  ░░███████  ████████ ░░██████  █████                                       
+	  ░░░░░░░░░    ░░░░░███ ░░░░░░░░   ░░░░░░  ░░░░░                                        
+	               ███ ░███                                                                 
+	              ░░██████                                                                  
+	               ░░░░░░                                                                   
+	 ███████████             █████               ███            █████       ████   ████████ 
+	░░███░░░░░███           ░░███               ░░░            ░░███       ░░███  ███░░░░███
+	 ░███    ░███  ██████   ███████   ████████  ████   ██████  ███████      ░███ ░███   ░███
+	 ░██████████  ░░░░░███ ░░░███░   ░░███░░███░░███  ███░░███░░░███░       ░███ ░░█████████
+	 ░███░░░░░░    ███████   ░███     ░███ ░░░  ░███ ░███ ░███  ░███        ░███  ░░░░░░░███
+	 ░███         ███░░███   ░███ ███ ░███      ░███ ░███ ░███  ░███ ███    ░███  ███   ░███
+	 █████       ░░████████  ░░█████  █████     █████░░██████   ░░█████     █████░░████████ 
+	░░░░░         ░░░░░░░░    ░░░░░  ░░░░░     ░░░░░  ░░░░░░     ░░░░░     ░░░░░  ░░░░░░░░  
+\033[39m"
+echo -e "\e[1m\e[92m^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^\e[0m"
+echo -e " ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- -------"  
+displayUsrOption(){
+	echo -e "\n\033[36m	OPTIONS:\n\033[93m\n <USER INFO> - (1)\033[39m\n"
+}
+declare -i timeout=0
+while [ $timeout -eq 0 ]; do
+	
+	displayUsrOption
+		read -sn1 input
+			if [ $input -eq 1 ]; then
+				getUserInputFunc			
+				echo -e "\n\033[94m\e[1m0 to return\e[0m"
+				while [ $input -ne 0 ]; do 
+					read -sn1 input
+				done
+			fi
+	done
