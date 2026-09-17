@@ -1,5 +1,5 @@
 #!/bin/bash
-echo -e "\n~ ~ ~ ~ ~ ~ ~ ~ <Starting Auto-Maintenance by Isaiah> ~ ~ ~ ~ ~ ~ ~ ~ ~"
+echo -e "\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ <Starting Auto-Maintenance> ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~"
 echo -e "\nOptions:\n
    [1] ×¬ Force Execution Now. <Will automatically start in 15 secs>
    [2] ×¬ Force Service Restart Only. <Restarts all critical services and may require reboot> 
