@@ -1,5 +1,5 @@
 #!/bin/bash
-getUserInputFunc()
+getUserDataFunc()
 	{
 		echo -e "\033[93m\e[4m\n---<USER INFO>---\n\e[24m"
 		UIDmin=$(grep "^UID_MIN" /etc/login.defs)
@@ -13,7 +13,7 @@ getUserInputFunc()
 			getent group root
 			getent group sudo
 	}
-getCurrentSecurityConfFunc()
+getLoginSecurityConfFunc()
  	{
 		logGoodLogins=$(grep "^LOG_OK_LOGINS" /etc/login.defs)
 		passwordMaxDays=$(grep "^PASS_MAX_DAYS" /etc/login.defs)
@@ -23,9 +23,15 @@ getCurrentSecurityConfFunc()
 		echo -e "\n\033[36mSrc:/etc/passwd\n   ->\033[39m Current Login Config:\n"
 		echo -e "\033[35m$logGoodLogins\n$passwordMaxDays\n$loginRetries\n$loginTimeout\n$passwordEncryptionMethod\e[0m"
 	}
+getUFWConfFunc()
+	{
+		#/etc/default/ufw && /etc/ufw/sysctl.conf
+		ufwStatus=$(sudo ufw status)
+		ufwDefault=$(grep "^DEFAULT" /etc/default/ufw)
+		echo -e "$ufwStatus\n$ufwDefault\n"
+	}
 echo -e "\n\n\n\n\n\n\n\n\n\n ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- -------
-\e[1m\e[92m^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^\e[0m
-\033[33m 
+\e[1m\e[92m^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^\e[0m\n\033[33m 
 	   █████████             █████                                                          
  	 ███░░░░░███           ░░███                                                           
 	 ███     ░░░  █████ ████ ░███████   ██████  ████████                                    
@@ -46,24 +52,32 @@ echo -e "\n\n\n\n\n\n\n\n\n\n ------- ------- ------- ------- ------- ------- --
 	 █████       ░░████████  ░░█████  █████     █████░░██████   ░░█████     █████░░████████ 
 	░░░░░         ░░░░░░░░    ░░░░░  ░░░░░     ░░░░░  ░░░░░░     ░░░░░     ░░░░░  ░░░░░░░░  
 \033[39m"
-echo -e "\e[1m\e[92m^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^\e[0m"
-echo -e " ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- -------"  
-displayUsrOption(){
-	echo -e "\n\033[36m	OPTIONS:\n\033[93m\n <USER INFO> - (1)   <SECURITY CONFIG> - (2)\033[39m\n"
+echo -e "\e[1m\e[92m^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^\e[0m
+------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- -------"
+displayUsrOption()
+{
+echo -e "\n\033[36m	VIEWS:\n\033[93m\n <USER DATABASE> - (1) <LOGIN SECURIT> - (2) <UFW CUR STATS> - (3)"
+echo -e "\n\033[36m CONFS:\n\033[93m\n <RE PRIVLEDGER> - (a) <GLOBAL PASSWD> - (b) <UFW EASY CONF> - (d)\033[39m\n"
 }
 declare -i timeout=0
 while [ $timeout -eq 0 ]; do
 	displayUsrOption
-	input=0
+	input=0;
 	read -sn1 input
 		if [ $input -eq 1 ]; then
-			getUserInputFunc			
+			getUserDataFunc	
 			echo -e "\n\033[94m\e[1m0 to return\e[0m"
 			while [ $input -ne 0 ]; do 
 				read -sn1 input
 			done
 		elif [ $input -eq 2 ]; then
-			getCurrentSecurityConfFunc
+			getLoginSecurityConfFunc
+			echo -e "\n\033[94m\e[1m0 to return\e[0m"
+			while [ $input -ne 0 ]; do 
+				read -sn1 input
+			done
+		elif [ $input -eq 3 ]; then
+			getUFWConfFunc
 			echo -e "\n\033[94m\e[1m0 to return\e[0m"
 			while [ $input -ne 0 ]; do 
 				read -sn1 input
