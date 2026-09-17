@@ -4,16 +4,24 @@ getUserInputFunc()
 		echo -e "\033[93m\e[4m\n---<USER INFO>---\n\e[24m"
 		UIDmin=$(grep "^UID_MIN" /etc/login.defs)
 		UIDmax=$(grep "^UID_MAX" /etc/login.defs)
-		echo -e "\033[36mSrc:/etc/login.defs\n   \033[36m->\033[39m Defined ID Range: \033[35m$UIDmin\033[39m | \033[35m$UIDmax\033[39m"
+		echo -e "\033[36mSrc:/etc/login.defs\n   ->\033[39m Defined ID Range: \n\033[35m$UIDmin\033[39m | \033[35m$UIDmax\033[39m"
 			#Finds low and high UsrID, then print all UID's low += max, excludes root
-		echo -e "\n\033[36mSrc:/etc/passwd\n   \033[36m->\033[39m All non-root users, formated: 
-		 userName :x: UID# : [Alias] : /homeDir/ : shell\n\e[35m"
+		echo -e "\n\033[36mSrc:/etc/passwd\n   \033[36m->\033[39m All non-root users:\n\nuserName :x: UID# : [Alias] : /homeDir/ : shell\e[35m"
 		awk -F':' -v "min=${UIDmin#UID_MIN}" -v "max=${UIDmax##UID_MAX}" '{ if ( $3 >= min && $3 <= max ) print $0}' /etc/passwd
-		echo -e "\e[0m\033[36m\nDefault Permitted Groups:
-   ->\033[0m Format:
- groupID : x : GID# : [Alias]	\033[35m\n"
+		#echo -e "\e[0m\033[36m\nDefault Permitted Groups:
+		echo -e "\n\e[0m\033[36m   ->\033[0m Default Permitted Groups:\n\ngroupID : x : GID# : [Alias]	\033[35m"
 			getent group root
 			getent group sudo
+	}
+getCurrentSecurityConfFunc()
+ 	{
+		logGoodLogins=$(grep "^LOG_OK_LOGINS" /etc/login.defs)
+		passwordMaxDays=$(grep "^PASS_MAX_DAYS" /etc/login.defs)
+		loginRetries=$(grep "^LOGIN_RETRIES" /etc/login.defs)
+		loginTimeout=$(grep "^LOGIN_TIMEOUT" /etc/login.defs)
+		passwordEncryptionMethod=$(grep "^ENCRYPT_METHOD" /etc/login.defs)
+		echo -e "\n\033[36mSrc:/etc/passwd\n   ->\033[39m Current Login Config:\n"
+		echo -e "\033[35m$logGoodLogins\n$passwordMaxDays\n$loginRetries\n$loginTimeout\n$passwordEncryptionMethod\e[0m"
 	}
 echo -e "\n\n\n\n\n\n\n\n\n\n ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- -------
 \e[1m\e[92m^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^\e[0m
@@ -41,18 +49,26 @@ echo -e "\n\n\n\n\n\n\n\n\n\n ------- ------- ------- ------- ------- ------- --
 echo -e "\e[1m\e[92m^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^\e[0m"
 echo -e " ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- -------"  
 displayUsrOption(){
-	echo -e "\n\033[36m	OPTIONS:\n\033[93m\n <USER INFO> - (1)\033[39m\n"
+	echo -e "\n\033[36m	OPTIONS:\n\033[93m\n <USER INFO> - (1)   <SECURITY CONFIG> - (2)\033[39m\n"
 }
 declare -i timeout=0
 while [ $timeout -eq 0 ]; do
-	
 	displayUsrOption
-		read -sn1 input
-			if [ $input -eq 1 ]; then
-				getUserInputFunc			
-				echo -e "\n\033[94m\e[1m0 to return\e[0m"
-				while [ $input -ne 0 ]; do 
-					read -sn1 input
-				done
-			fi
+	input=0
+	read -sn1 input
+		if [ $input -eq 1 ]; then
+			getUserInputFunc			
+			echo -e "\n\033[94m\e[1m0 to return\e[0m"
+			while [ $input -ne 0 ]; do 
+				read -sn1 input
+			done
+		elif [ $input -eq 2 ]; then
+			getCurrentSecurityConfFunc
+			echo -e "\n\033[94m\e[1m0 to return\e[0m"
+			while [ $input -ne 0 ]; do 
+				read -sn1 input
+			done
+		else
+			echo -e "\n\033[91m\e[1mInvalid input\e[0m"
+		fi
 	done
