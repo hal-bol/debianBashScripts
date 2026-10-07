@@ -28,7 +28,18 @@ getUFWConfFunc()
 		#/etc/default/ufw && /etc/ufw/sysctl.conf
 		ufwStatus=$(sudo ufw status)
 		ufwDefault=$(grep "^DEFAULT" /etc/default/ufw)
-		echo -e "$ufwStatus\n$ufwDefault\n"
+		echo -e "\033[35m$ufwStatus\n$ufwDefault\n"
+	}
+easyUFWConf()
+	{
+		sudo ufw enable
+		#sudo ufw
+	}
+	cloneSecurityPolicy(){
+		cp /scripts/simpleLogin.defs /etc/
+		rm /etc/login.defs
+		mov /etc/simpleLogin.defs /etc/login.defs
+
 	}
 echo -e "\n\n\n\n\n\n\n\n\n\n ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- -------
 \e[1m\e[92m^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^\e[0m\n\033[33m 
@@ -57,7 +68,7 @@ echo -e "\e[1m\e[92m^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-
 displayUsrOption()
 {
 echo -e "\n\033[36m	VIEWS:\n\033[93m\n <USER DATABASE> - (1) <LOGIN SECURIT> - (2) <UFW CUR STATS> - (3)"
-echo -e "\n\033[36m CONFS:\n\033[93m\n <RE PRIVLEDGER> - (a) <GLOBAL PASSWD> - (b) <UFW EASY CONF> - (d)\033[39m\n"
+echo -e "\n\033[36m CONFS:\n\033[93m\n <RE PRIVLEDGER> - (4) <CLON SE POLIC> - (5) <UFW EASY CONF> - (6)\033[39m\n"
 }
 declare -i timeout=0
 while [ $timeout -eq 0 ]; do
@@ -65,21 +76,39 @@ while [ $timeout -eq 0 ]; do
 	input=0;
 	read -sn1 input
 		if [ $input -eq 1 ]; then
-			getUserDataFunc	
+			getUserDataFunc
 			echo -e "\n\033[94m\e[1m0 to return\e[0m"
-			while [ $input -ne 0 ]; do 
+			while [ $input -ne 0 ]; do
 				read -sn1 input
 			done
 		elif [ $input -eq 2 ]; then
 			getLoginSecurityConfFunc
 			echo -e "\n\033[94m\e[1m0 to return\e[0m"
-			while [ $input -ne 0 ]; do 
+			while [ $input -ne 0 ]; do
 				read -sn1 input
 			done
 		elif [ $input -eq 3 ]; then
 			getUFWConfFunc
 			echo -e "\n\033[94m\e[1m0 to return\e[0m"
-			while [ $input -ne 0 ]; do 
+			while [ $input -ne 0 ]; do
+				read -sn1 input
+			done
+		elif [ $input -eq 4 ]; then
+		#add func
+			echo -e "\n\033[94m\e[1m0 to return\e[0m"
+			while [ $input -ne 0 ]; do
+				read -sn1 input
+			done
+		elif [ $input -eq 5 ]; then
+
+			echo -e "\n\033[94m\e[1m0 to return\e[0m"
+			while [ $input -ne 0 ]; do
+				read -sn1 input
+			done
+		elif [ $input -eq 6 ]; then
+			easyUFWConf
+			echo -e "\n\033[94m\e[1m0 to return\e[0m"
+			while [ $input -ne 0 ]; do
 				read -sn1 input
 			done
 		else
